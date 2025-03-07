@@ -1,22 +1,95 @@
-<form id="formulario">
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <textarea name="descripcion" placeholder="Descripción" required></textarea>
-    <input type="file" name="foto">
-    <button type="submit">Enviar</button>
-</form>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspección de Vehículo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        #imagePreview {
+            width: 100%;
+            margin-top: 10px;
+            display: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inspección de Vehículo</h2>
+        <form id="formulario">
+            <input type="text" name="nombre" placeholder="Nombre del inspector" required>
+            <input type="text" name="placa" placeholder="Placa del vehículo" required>
+            <input type="text" name="modelo" placeholder="Modelo del vehículo" required>
+            <input type="number" name="km" placeholder="Kilometraje actual" required>
+            <textarea name="descripcion" placeholder="Descripción del estado del vehículo" required></textarea>
+            <input type="file" name="foto" id="foto" accept="image/*">
+            <img id="imagePreview" src="#" alt="Vista previa de la imagen">
+            <button type="submit">Enviar Reporte</button>
+        </form>
+    </div>
 
-<script>
-document.getElementById("formulario").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    let formData = new FormData(this);
-    
-    fetch("https://TU_SERVIDOR/webhook", {  // Cambia TU_SERVIDOR por tu IP o dominio
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => alert("Datos enviados al bot"))
-    .catch(error => console.error("Error:", error));
-});
-</script>
+    <script>
+        document.getElementById("foto").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById("imagePreview");
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            fetch("https://TU_SERVIDOR/webhook", {  // Cambia TU_SERVIDOR por tu IP o dominio
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => alert("Datos enviados al bot"))
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
