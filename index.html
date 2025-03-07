@@ -7,29 +7,38 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
         }
         input, select, textarea, button {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            padding: 10px;
+            margin: 5px 0;
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
+        table {
+            width: 100%;
+            background-color: #e8f0fe;
+            border-radius: 5px;
+            padding: 10px;
         }
-        .checkbox-group input {
-            margin-right: 10px;
+        th, td {
+            padding: 8px;
+            text-align: center;
         }
         button {
             background-color: green;
@@ -43,60 +52,74 @@
     </style>
 </head>
 <body>
-    <h2>Inspección de Vehículo</h2>
-    <form id="formulario">
-        <label>Nombre del Inspector</label>
-        <input type="text" name="nombre" placeholder="Nombre del Inspector" required>
-        
-        <label>Placa del Vehículo</label>
-        <select name="placa" required>
-            <option value="">Seleccione Placa</option>
-            <option value="ABC123">ABC123</option>
-            <option value="XYZ789">XYZ789</option>
-        </select>
-        
-        <label>Modelo del Vehículo</label>
-        <select name="modelo" required>
-            <option value="">Seleccione Modelo</option>
-            <option value="Sedan">Sedan</option>
-            <option value="SUV">SUV</option>
-        </select>
-        
-        <label>Kilometraje</label>
-        <input type="number" name="kilometraje" placeholder="Kilometraje" required>
-        
-        <label>Descripción del Estado</label>
-        <textarea name="descripcion" placeholder="Descripción del Estado" required></textarea>
-        
-        <label>Encuesta:</label>
-        <div class="checkbox-group">
-            <input type="checkbox" name="llantas" value="buen_estado"> Llantas en buen estado
-        </div>
-        <div class="checkbox-group">
-            <input type="checkbox" name="papeles" value="en_regla"> Papeles en regla
-        </div>
-        <div class="checkbox-group">
-            <input type="checkbox" name="cinturon" value="funcional"> Cinturón de seguridad funcional
-        </div>
-        
-        <label>Sube fotos:</label>
-        <input type="file" name="foto_motor" accept="image/*">
-        <input type="file" name="foto_trasera" accept="image/*">
-        
-        <button type="submit">Enviar</button>
-    </form>
+    <div class="container">
+        <h2>Inspección de Vehículo</h2>
+        <form id="formulario">
+            <input type="text" name="nombre" placeholder="Nombre del Inspector" required>
+            <select name="placa" required>
+                <option value="" disabled selected>Placa del Vehículo</option>
+                <option value="XYZ789">XYZ789</option>
+                <option value="ABC123">ABC123</option>
+            </select>
+            <select name="modelo" required>
+                <option value="" disabled selected>Modelo del Vehículo</option>
+                <option value="SUV">SUV</option>
+                <option value="Sedan">Sedan</option>
+            </select>
+            <input type="text" name="kilometraje" id="kilometraje" placeholder="Kilometraje" required>
+            <textarea name="descripcion" placeholder="Descripción del Estado" required></textarea>
+
+            <h3>Encuesta:</h3>
+            <table>
+                <tr>
+                    <th>Pregunta</th>
+                    <th>Sí</th>
+                    <th>No</th>
+                </tr>
+                <tr>
+                    <td>Llantas en buen estado</td>
+                    <td><input type="radio" name="llantas" value="Sí"></td>
+                    <td><input type="radio" name="llantas" value="No"></td>
+                </tr>
+                <tr>
+                    <td>Papeles en regla</td>
+                    <td><input type="radio" name="papeles" value="Sí"></td>
+                    <td><input type="radio" name="papeles" value="No"></td>
+                </tr>
+                <tr>
+                    <td>Cinturón de seguridad funcional</td>
+                    <td><input type="radio" name="cinturon" value="Sí"></td>
+                    <td><input type="radio" name="cinturon" value="No"></td>
+                </tr>
+            </table>
+
+            <h3>Sube fotos:</h3>
+            <input type="file" name="foto1" required>
+            <input type="file" name="foto2" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
 
     <script>
         document.getElementById("formulario").addEventListener("submit", function(event) {
             event.preventDefault();
+            
             let formData = new FormData(this);
-            fetch("https://TU_SERVIDOR/webhook", {  // Cambia TU_SERVIDOR por tu IP o dominio
+            
+            fetch("https://TU_SERVIDOR/webhook", {  
                 method: "POST",
                 body: formData
             })
             .then(response => response.json())
             .then(data => alert("Datos enviados al bot"))
             .catch(error => console.error("Error:", error));
+        });
+
+        // Formato automático para kilometraje con puntos de miles
+        document.getElementById("kilometraje").addEventListener("input", function() {
+            let valor = this.value.replace(/\D/g, ""); // Elimina caracteres no numéricos
+            this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Agrega puntos de miles
         });
     </script>
 </body>
