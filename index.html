@@ -1,61 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario en Telegram</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        input, textarea, button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Formulario</h2>
-    <input type="text" id="nombre" placeholder="Nombre">
-    <textarea id="descripcion" placeholder="Descripción"></textarea>
-    <input type="file" id="foto">
-    <button onclick="enviarFormulario()">Enviar</button>
+<form id="formulario">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <textarea name="descripcion" placeholder="Descripción" required></textarea>
+    <input type="file" name="foto">
+    <button type="submit">Enviar</button>
+</form>
 
-    <script>
-        function enviarFormulario() {
-            let nombre = document.getElementById("nombre").value;
-            let descripcion = document.getElementById("descripcion").value;
-            let foto = document.getElementById("foto").files[0];
-
-            if (!nombre || !descripcion) {
-                alert("Por favor, completa todos los campos.");
-                return;
-            }
-
-            let formData = new FormData();
-            formData.append("nombre", nombre);
-            formData.append("descripcion", descripcion);
-            if (foto) {
-                formData.append("foto", foto);
-            }
-
-            // Enviar datos al bot
-            fetch("https://TU_SERVIDOR.com/webhook", {
-                method: "POST",
-                body: formData
-            }).then(response => response.json())
-            .then(data => {
-                alert("Formulario enviado con éxito!");
-                Telegram.WebApp.close();
-            }).catch(error => {
-                alert("Error al enviar el formulario.");
-            });
-        }
-    </script>
-</body>
-</html>
+<script>
+document.getElementById("formulario").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    let formData = new FormData(this);
+    
+    fetch("https://TU_SERVIDOR/webhook", {  // Cambia TU_SERVIDOR por tu IP o dominio
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => alert("Datos enviados al bot"))
+    .catch(error => console.error("Error:", error));
+});
+</script>
